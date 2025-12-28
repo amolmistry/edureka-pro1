@@ -24,13 +24,37 @@ pipeline {
                 sh 'mvn test'
             }
         }
-
-        stage('Package Code') {
-            steps {
-                echo 'Running mvn package...'
-                sh 'mvn package'
-            }
+	stage ('Build')
+	{
+		steps
+		{
+			sh 'mvn package'
+		}
         }
+	stage('Build Docker Image') 
+	{
+    		steps 
+		{
+        		echo 'Building Docker image...'
+        		sh 'cp target/XYZtechnologies-1.0.war XYZtechnologies-1.0.war'
+          		sh 'docker build -t amolmistry/edureka-pro1:v1 .'
     }
+}
+	stage('Push Docker Image') 
+	{
+    		steps 
+		{
+        		echo 'Pushing Docker image...'
+        		sh 'docker push amolmistry/edureka-pro1:v1'
+    		}	
+	}	
+    	stage ('Deploy as container')
+	{
+		steps
+		{
+			sh 'docker run -p amolmistry/edureka-pro1:v1'
+		}
+}
+}
 }
 
