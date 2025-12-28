@@ -49,10 +49,16 @@ pipeline {
         }
 
         stage('Deploy as container') {
-            steps {
-                echo 'Deploying container...'
-                sh 'docker run -d --name edureka-pro1 -p 8080:8080 amolmistry/edureka-pro1:v1'
-            }
+		steps {
+        echo 'Deploying container...'
+        sh '''
+          # Clean up old container if it exists
+          docker rm -f edureka-pro1 || true
+
+          # Map host port 9090 to container port 8080
+          docker run -d --name edureka-pro1 -p 9090:8080 amolmistry/edureka-pro1:v1
+        '''            
+}
         }
     }
 }
